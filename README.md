@@ -1,1 +1,2 @@
-# trello-board-to-github-project
+Export trello board (with selected columns) to github project. 
+The idea is to keep code base and project development information/issues/etc on single website. In current case, means getting rid of Trello.
