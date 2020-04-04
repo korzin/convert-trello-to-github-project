@@ -4,6 +4,7 @@ import copy
 import json
 import requests
 import sys
+import re
 
 # class RestRespValidationException(Exception):
 #     pass
@@ -15,17 +16,31 @@ ARG_API_KEY = sys.argv[1]
 ARG_AUTH_TOKEN = sys.argv[2]
 ARG_SOURCE_BOARD_NAME = sys.argv[3]
 
+FLOW_LIST_SCHEME = ["todo", "in progress", "done"]  # will be dynamic
 
 def main():
     source_board_id = get_board_id_by_name(ARG_SOURCE_BOARD_NAME)
-    source_board = get_board_by_id(source_board_id)
-    print("board: " + str(source_board))
+    all_source_lists = get_all_lists_by_board(source_board_id)
+    lists_by_name = extract_as_lists_flow_scheme(all_source_lists)
+    print("lists to export : " + str(lists_by_name))
 
+def extract_as_lists_flow_scheme(board_lists):
+    export_lists_dictionary = {}
+    for name_pattern in FLOW_LIST_SCHEME:
+        export_lists_dictionary[name_pattern] = []
 
-def get_board_by_id(board_id):
-    url = TRELLO_BASIC_PATH + "/1/members/me/boards/"
+    for list in board_lists:
+        for name_pattern in FLOW_LIST_SCHEME:
+            if re.search(name_pattern, list['name'], re.IGNORECASE):
+                export_lists_dictionary[name_pattern].append(list)
+                break
+
+    return export_lists_dictionary
+
+def get_all_lists_by_board(board_id):
+    url = TRELLO_BASIC_PATH + "/1/boards/" + board_id + "/lists"
     headers = {"Accept": "application/json"}
-    query = {"id": board_id}
+    query = {}
     params = with_auth_params(query)
 
     response = requests.request(
@@ -45,7 +60,6 @@ def get_board_id_by_name(name):
     query = {'fields': 'id,name'}
     params = with_auth_params(query)
 
-    print(params)
     response = requests.request(
         "GET",
         url,
@@ -54,8 +68,7 @@ def get_board_id_by_name(name):
     )
     # TODO extract
     if not hasattr(response, 'text'):
-        print("Response has no body. :" + str(response))
-        print("Exit")
+        print("err. Response has no body. :" + str(response))
         return
 
     boards_id_name_pairs = json.loads(response.text)
@@ -65,7 +78,6 @@ def get_board_id_by_name(name):
 
     if (source_board_id_name_pair is None):
         print("err. board not found")
-        print("Exit")
         return
 
     return source_board_id_name_pair['id']
