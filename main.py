@@ -49,7 +49,7 @@ def github_create_column_by_name(project_id, column_name):
                              )
     create_column_response = json.loads(response.text)
     id_ = create_column_response["id"]
-    print("log. created column " + column_name + " with id: " + str(id_))
+    print("log. created column \"" + column_name + "\" with id: " + str(id_))
     return id_
 
 
