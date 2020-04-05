@@ -23,6 +23,7 @@ GITHUB_BASIC_PATH = "https://api.github.com"
 CURR_DATE = datetime.date(datetime.now())  # format 'yyyy-mm-dd'
 FLOW_LIST_SCHEME = ["todo", "in progress", "done"]  # will be dynamic
 
+
 def main():
     # TRELLO export
     print("Trello board \"" + ARG_SOURCE_BOARD_NAME + "\" export started...")
