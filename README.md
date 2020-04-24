@@ -1,4 +1,5 @@
-##Export trello board to github project. 
+
+## Export trello board to github project. 
 
 #### Motivation
 I and my colleagues had a lot of the Trello boards, where each corresponds to certain github repository. Therefore, to avoid one level of, say, personal bureaucracy I created a script to convert trello board information to github project. 
